@@ -12,7 +12,7 @@ with open('flask_restpy/__init__.py', 'rb') as f:
 
 
 setup(
-    name='rest.py',
+    name='flask-restpy',
     version=version,
     license='BSD',
     url='https://github.com/kevinxuv/flask-restpy',

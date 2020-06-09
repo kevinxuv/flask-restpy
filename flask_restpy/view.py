@@ -73,15 +73,16 @@ class ResourceView(MethodView):
 
 def get_all_resource_views():
     import gc
-    resouces = [
+    resources = [
         kls for kls in gc.get_objects()
         if issubclass(type(kls), type) and issubclass(kls, Resource)
         and kls != Resource and 'Resource' not in kls.__name__
     ]
     resource_views = {}
-    for resouce in resouces:
-        resource_view = ResourceView(resouce)
-        resource_views[f'{resouce.__name__.upper()}s'] = resource_view
+    for resource in resources:
+        resource_view = ResourceView(resource)
+        resource_view.__name__ = resource.__name__.lower()
+        resource_views[f'{resource.__name__.lower()}s'] = resource_view
     return resource_views
 
 
