@@ -5,6 +5,7 @@ from peewee import Model
 from playhouse.shortcuts import model_to_dict
 
 from .base import Resource
+from flask_restpy.exceptions import ParamError
 
 
 class PeeweeResource(Resource):
@@ -18,8 +19,20 @@ class PeeweeResource(Resource):
     def get_by_id(self, id):
         return self.model.get_by_id(id)
 
-    def get(self, *query, **filters):
-        return self.model.get(*query, **filters)
+    def get(self, *fields, page=None, limit=None, **filters):
+        for field in fields:
+            if not hasattr(self.model, field):
+                raise ParamError(f'{field} not in model {self.model}')
+        sq = self.model.select(*fields)
+        for field, value in filters.items():
+            if not hasattr(self.model, field):
+                raise ParamError(f'{field} not in model {self.model}')
+            sq = sq.where(getattr(self.model, field) == value)
+        if page and limit:
+            sq = sq.paginate(page=page, paginate_by=limit)
+        else:
+            sq = sq.paginate(1)
+        return list(sq)
 
     def create(self, **instance):
         return self.model.create(**instance)
