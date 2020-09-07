@@ -4,7 +4,6 @@ from werkzeug.exceptions import BadRequest, NotFound
 from flask import (Flask, request, jsonify)
 from flask.views import MethodView
 
-
 from flask_restpy.resources.base import Resource
 
 logger = logging.getLogger(__name__)
